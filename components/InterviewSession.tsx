@@ -316,7 +316,7 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
       <FeedbackScreen
         feedback={feedback}
         loading={loadingFeedback}
-        onRestart={() => router.push('/')}
+        onRestart={() => router.push('/problems')}
       />
     );
   }

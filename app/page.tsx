@@ -227,19 +227,13 @@ export default function LandingPage() {
                 Practice with an AI interviewer that asks follow-up questions, adapts to your answers, and gives you honest feedback, not just a pass or fail.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex">
                 <Link
                   href="/problems"
-                  className="btn-glow inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-3.5 rounded-xl"
+                  className="btn-glow inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-10 py-4 rounded-xl text-lg"
                 >
                   Start Practicing
                   <IconArrow />
-                </Link>
-                <Link
-                  href="/history"
-                  className="inline-flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-300 font-medium px-7 py-3.5 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
-                >
-                  View History
                 </Link>
               </div>
 
