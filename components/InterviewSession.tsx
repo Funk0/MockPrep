@@ -522,35 +522,44 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
 
 // ─── ScoreCard ───────────────────────────────────────────────────────────────
 
-function ScoreCard({
+function ScoreRing({
   label,
   score,
   explanation,
+  delay = 0,
 }: {
   label: string;
   score: number;
   explanation: string;
+  delay?: number;
 }) {
-  const color =
-    score >= 8 ? 'text-green-400' : score >= 5 ? 'text-yellow-400' : 'text-red-400';
-  const barColor =
-    score >= 8 ? 'bg-green-500' : score >= 5 ? 'bg-yellow-500' : 'bg-red-500';
-  const pct = Math.min(100, Math.max(0, (score / 10) * 100));
+  const r = 36;
+  const circ = 2 * Math.PI * r;
+  const pct = Math.min(100, Math.max(0, score / 10));
+  const dash = pct * circ;
+  const color = score >= 8 ? '#4ade80' : score >= 5 ? '#facc15' : '#f87171';
+  const textColor = score >= 8 ? 'text-green-400' : score >= 5 ? 'text-yellow-400' : 'text-red-400';
+  const trackColor = score >= 8 ? 'rgba(74,222,128,0.1)' : score >= 5 ? 'rgba(250,204,21,0.1)' : 'rgba(248,113,113,0.1)';
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-medium text-gray-200">{label}</span>
-        <span className={`text-2xl font-bold ${color}`}>{score}/10</span>
+    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col items-center text-center">
+      {/* Ring */}
+      <div className="relative w-24 h-24 mb-4">
+        <svg className="w-24 h-24 -rotate-90" viewBox="0 0 88 88" aria-hidden>
+          <circle cx="44" cy="44" r={r} fill="none" stroke={trackColor} strokeWidth="7" />
+          <circle
+            cx="44" cy="44" r={r} fill="none"
+            stroke={color} strokeWidth="7" strokeLinecap="round"
+            strokeDasharray={`${dash} ${circ}`}
+            style={{ transition: `stroke-dasharray 1s ease ${delay}ms` }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className={`text-2xl font-extrabold ${textColor}`}>{score}</span>
+        </div>
       </div>
-      {/* Score bar */}
-      <div className="h-1.5 bg-gray-700 rounded-full mb-3 overflow-hidden">
-        <div
-          className={`h-full rounded-full ${barColor} transition-all duration-700`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <p className="text-sm text-gray-400">{explanation}</p>
+      <h3 className="text-white font-semibold mb-2">{label}</h3>
+      <p className="text-gray-500 text-sm leading-relaxed">{explanation}</p>
     </div>
   );
 }
@@ -570,9 +579,40 @@ function FeedbackScreen({
     return (
       <div className="h-[calc(100vh-56px)] bg-gray-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4">Analyzing...</div>
-          <p className="text-gray-400 text-lg">Analyzing your session...</p>
-          <p className="text-gray-600 text-sm mt-2">This may take a moment</p>
+          {/* Spinner */}
+          <div className="w-20 h-20 mx-auto mb-8">
+            <svg className="w-20 h-20 animate-spin" viewBox="0 0 80 80" fill="none" aria-hidden>
+              <circle cx="40" cy="40" r="34" stroke="rgba(59,130,246,0.15)" strokeWidth="6" />
+              <path
+                d="M40 6 a34 34 0 0 1 34 34"
+                stroke="#3b82f6"
+                strokeWidth="6"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+
+          <h2 className="text-2xl font-bold text-white mb-2">Analyzing your session</h2>
+          <p className="text-gray-400 text-sm mb-1">Reviewing your code, communication, and problem-solving approach...</p>
+          <p className="text-gray-600 text-xs mb-6">This usually takes about 20 seconds.</p>
+
+          {/* Animated steps */}
+          <div className="flex flex-col items-center gap-2 text-sm">
+            {[
+              'Reviewing conversation',
+              'Evaluating code quality',
+              'Generating feedback',
+            ].map((step, i) => (
+              <div
+                key={step}
+                className="flex items-center gap-2 text-gray-500"
+                style={{ animation: `pulse 1.5s ease-in-out ${i * 0.4}s infinite` }}
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500/60" />
+                {step}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -582,58 +622,101 @@ function FeedbackScreen({
     (feedback.communicationScore + feedback.problemSolvingScore + feedback.codeQualityScore) / 3
   );
 
+  const avgColor = avg >= 8 ? 'text-green-400' : avg >= 5 ? 'text-yellow-400' : 'text-red-400';
+  const avgR = 54;
+  const avgCirc = 2 * Math.PI * avgR;
+  const avgDash = (avg / 10) * avgCirc;
+  const avgStroke = avg >= 8 ? '#4ade80' : avg >= 5 ? '#facc15' : '#f87171';
+  const avgTrack = avg >= 8 ? 'rgba(74,222,128,0.1)' : avg >= 5 ? 'rgba(250,204,21,0.1)' : 'rgba(248,113,113,0.1)';
+
   return (
-    <div className="min-h-[calc(100vh-56px)] bg-gray-950 text-gray-100 p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-1">Session Complete</h1>
-          <p className="text-gray-400">Here is how you did</p>
-          <div className="mt-4 text-6xl font-bold text-blue-400">{avg}/10</div>
-          <p className="text-gray-500 text-sm">Overall Average</p>
+    <div className="min-h-[calc(100vh-56px)] bg-gray-950 text-gray-100 overflow-y-auto">
+
+      {/* ── Hero header ── */}
+      <div className="relative border-b border-gray-800/60 overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse 60% 100% at 50% -10%, rgba(59,130,246,0.1) 0%, transparent 65%)' }}
+        />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-12">
+          <div className="flex flex-col lg:flex-row items-center gap-10">
+
+            {/* Overall score ring */}
+            <div className="flex flex-col items-center shrink-0">
+              <div className="relative w-36 h-36">
+                <svg className="w-36 h-36 -rotate-90" viewBox="0 0 132 132" aria-hidden>
+                  <circle cx="66" cy="66" r={avgR} fill="none" stroke={avgTrack} strokeWidth="9" />
+                  <circle
+                    cx="66" cy="66" r={avgR} fill="none"
+                    stroke={avgStroke} strokeWidth="9" strokeLinecap="round"
+                    strokeDasharray={`${avgDash} ${avgCirc}`}
+                    style={{ transition: 'stroke-dasharray 1.2s ease 0ms' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className={`text-4xl font-extrabold leading-none ${avgColor}`}>{avg}</span>
+                  <span className="text-gray-500 text-xs mt-0.5">/10</span>
+                </div>
+              </div>
+              <p className="text-gray-400 text-sm mt-3">Overall Score</p>
+            </div>
+
+            {/* Title + summary */}
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-xs font-medium px-3 py-1.5 rounded-full mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                Session Complete
+              </div>
+              <h1 className="text-4xl font-extrabold text-white mb-3">
+                {avg >= 8 ? 'Outstanding work.' : avg >= 5 ? 'Solid effort.' : 'Keep pushing.'}
+              </h1>
+              <p className="text-gray-400 text-lg max-w-lg">
+                {feedback.closingNote}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Score breakdown ── */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
+        <h2 className="text-lg font-semibold text-white mb-6">Score Breakdown</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+          <ScoreRing label="Communication" score={feedback.communicationScore} explanation={feedback.communicationExplanation} delay={100} />
+          <ScoreRing label="Problem Solving" score={feedback.problemSolvingScore} explanation={feedback.problemSolvingExplanation} delay={250} />
+          <ScoreRing label="Code Quality" score={feedback.codeQualityScore} explanation={feedback.codeQualityExplanation} delay={400} />
         </div>
 
-        <div className="space-y-4 mb-6">
-          <ScoreCard
-            label="Communication"
-            score={feedback.communicationScore}
-            explanation={feedback.communicationExplanation}
-          />
-          <ScoreCard
-            label="Problem Solving"
-            score={feedback.problemSolvingScore}
-            explanation={feedback.problemSolvingExplanation}
-          />
-          <ScoreCard
-            label="Code Quality"
-            score={feedback.codeQualityScore}
-            explanation={feedback.codeQualityExplanation}
-          />
+        {/* ── Details grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+
+          {/* Improvements */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <h3 className="font-semibold text-white mb-4">Top 3 Things to Improve</h3>
+            <ol className="space-y-4">
+              {feedback.topImprovements.map((item, i) => (
+                <li key={i} className="flex gap-4">
+                  <span className="w-7 h-7 rounded-full bg-blue-600/15 border border-blue-500/25 text-blue-400 text-sm font-bold flex items-center justify-center shrink-0">
+                    {i + 1}
+                  </span>
+                  <p className="text-gray-400 text-sm leading-relaxed pt-0.5">{item}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Time management */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <h3 className="font-semibold text-white mb-4">Time Management</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">{feedback.timeManagement}</p>
+          </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-4">
-          <h3 className="font-medium text-gray-200 mb-2">Time Management</h3>
-          <p className="text-sm text-gray-400">{feedback.timeManagement}</p>
-        </div>
-
-        <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-4">
-          <h3 className="font-medium text-gray-200 mb-3">Top 3 Things to Improve</h3>
-          <ol className="space-y-2">
-            {feedback.topImprovements.map((item, i) => (
-              <li key={i} className="flex gap-3 text-sm text-gray-400">
-                <span className="text-blue-400 font-bold shrink-0">{i + 1}.</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div className="bg-blue-900/30 border border-blue-700/50 rounded-xl p-4 mb-6">
-          <p className="text-blue-300 text-sm">{feedback.closingNote}</p>
-        </div>
-
+        {/* ── CTA ── */}
         <button
           onClick={onRestart}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-medium transition-colors"
+          className="btn-glow w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-semibold text-base transition-colors"
         >
           Practice Another Problem
         </button>
