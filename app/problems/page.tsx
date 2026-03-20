@@ -33,22 +33,22 @@ const DIFFICULTY_SCORE: Record<string, number> = {
 
 const DIFFICULTY: Record<Difficulty, { badge: string; text: string; bar: string; active: string }> = {
   easy: {
-    badge: 'bg-green-900/40 text-green-300 border border-green-700/40',
-    text: 'text-green-400',
+    badge: 'bg-green-100 text-green-700 border border-green-300 dark:bg-green-900/40 dark:text-green-300 dark:border-green-700/40',
+    text: 'text-green-600 dark:text-green-400',
     bar: 'bg-green-500',
-    active: 'bg-green-800/60 border-green-500 text-green-200',
+    active: 'bg-green-100 border-green-400 text-green-800 dark:bg-green-800/60 dark:border-green-500 dark:text-green-200',
   },
   medium: {
-    badge: 'bg-yellow-900/40 text-yellow-300 border border-yellow-700/40',
-    text: 'text-yellow-400',
+    badge: 'bg-yellow-100 text-yellow-700 border border-yellow-300 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border-yellow-700/40',
+    text: 'text-yellow-600 dark:text-yellow-400',
     bar: 'bg-yellow-500',
-    active: 'bg-yellow-800/60 border-yellow-500 text-yellow-200',
+    active: 'bg-yellow-100 border-yellow-400 text-yellow-800 dark:bg-yellow-800/60 dark:border-yellow-500 dark:text-yellow-200',
   },
   hard: {
-    badge: 'bg-red-900/40 text-red-300 border border-red-700/40',
-    text: 'text-red-400',
+    badge: 'bg-red-100 text-red-700 border border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-700/40',
+    text: 'text-red-600 dark:text-red-400',
     bar: 'bg-red-500',
-    active: 'bg-red-800/60 border-red-500 text-red-200',
+    active: 'bg-red-100 border-red-400 text-red-800 dark:bg-red-800/60 dark:border-red-500 dark:text-red-200',
   },
 };
 
@@ -101,10 +101,10 @@ export default function ProblemsPage() {
   const isFiltered = selectedDifficulty || selectedCategory;
 
   return (
-    <main className="min-h-screen bg-gray-950 text-gray-100">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
 
       {/* ── Header ── */}
-      <div className="relative border-b border-gray-800/60 overflow-hidden">
+      <div className="relative border-b border-gray-200/60 dark:border-gray-800/60 overflow-hidden">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -115,21 +115,21 @@ export default function ProblemsPage() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-12">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
-              <h1 className="text-4xl font-extrabold text-white mb-2">Practice Problems</h1>
-              <p className="text-gray-400">
+              <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">Practice Problems</h1>
+              <p className="text-gray-600 dark:text-gray-400">
                 Select a problem to start a 45-minute AI interview session.
               </p>
             </div>
 
             {/* Stat pills */}
-            <div className="flex items-center gap-px bg-gray-800/60 border border-gray-700/60 rounded-xl overflow-hidden shrink-0">
+            <div className="flex items-center gap-px bg-gray-200 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700/60 rounded-xl overflow-hidden shrink-0">
               {(['easy', 'medium', 'hard'] as const).map((d) => (
                 <button
                   key={d}
                   onClick={() => setSelectedDifficulty(selectedDifficulty === d ? '' : d)}
                   aria-pressed={selectedDifficulty === d}
                   className={`flex flex-col items-center px-5 py-3 transition-colors ${
-                    selectedDifficulty === d ? 'bg-gray-700/80' : 'bg-gray-900/60 hover:bg-gray-800/60'
+                    selectedDifficulty === d ? 'bg-gray-300 dark:bg-gray-700/80' : 'bg-white dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-800/60'
                   }`}
                 >
                   <span className={`text-xl font-bold ${DIFFICULTY[d].text}`}>{counts[d]}</span>
@@ -160,7 +160,7 @@ export default function ProblemsPage() {
                     ? d === ''
                       ? 'bg-blue-600 border-blue-500 text-white'
                       : DIFFICULTY[d].active
-                    : 'bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
+                    : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
               >
                 {d === '' ? 'All' : d.charAt(0).toUpperCase() + d.slice(1)}
@@ -169,7 +169,7 @@ export default function ProblemsPage() {
           </div>
 
           {/* Divider */}
-          <div className="w-px h-5 bg-gray-700 hidden sm:block" aria-hidden />
+          <div className="w-px h-5 bg-gray-300 dark:bg-gray-700 hidden sm:block" aria-hidden />
 
           {/* Category dropdown */}
           <div className="relative">
@@ -177,7 +177,7 @@ export default function ProblemsPage() {
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               aria-label="Filter by category"
-              className="appearance-none bg-gray-900 border border-gray-700 text-gray-300 text-sm rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-500 transition-colors cursor-pointer"
+              className="appearance-none bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-400 dark:hover:border-gray-500 transition-colors cursor-pointer"
             >
               <option value="">All Categories</option>
               {categories.map((cat) => (
@@ -190,12 +190,12 @@ export default function ProblemsPage() {
           </div>
 
           {/* Difficulty bar info */}
-          <div className="group relative flex items-center gap-1 text-gray-600 hover:text-gray-400 transition-colors cursor-default ml-auto" aria-label="Bar length indicates relative difficulty across all problems">
+          <div className="group relative flex items-center gap-1 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors cursor-default ml-auto" aria-label="Bar length indicates relative difficulty across all problems">
             <InfoIcon />
             <span className="text-xs hidden sm:block">Difficulty bars</span>
-            <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 text-center leading-relaxed shadow-xl">
+            <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 text-center leading-relaxed shadow-xl">
               Bar length shows relative difficulty across the full problem set, not just within a tier.
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-700" />
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-200 dark:border-t-gray-700" />
             </div>
           </div>
 
@@ -218,14 +218,14 @@ export default function ProblemsPage() {
         {/* Problem grid */}
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
+            <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-400 dark:text-gray-500" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </div>
-            <p className="text-gray-400 font-medium mb-1">No problems match your filters</p>
-            <p className="text-gray-600 text-sm">Try adjusting the difficulty or category.</p>
+            <p className="text-gray-600 dark:text-gray-400 font-medium mb-1">No problems match your filters</p>
+            <p className="text-gray-500 text-sm">Try adjusting the difficulty or category.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -241,7 +241,7 @@ export default function ProblemsPage() {
                 <Link
                   key={problem.id}
                   href={`/interview/${problem.id}`}
-                  className="group flex flex-col bg-gray-900/60 border border-gray-800 hover:border-gray-600 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="group flex flex-col bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   aria-label={`Start interview: ${problem.title}, ${problem.difficulty} difficulty, ${problem.category}`}
                 >
                   {/* Top row */}
@@ -255,12 +255,12 @@ export default function ProblemsPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="font-semibold text-white group-hover:text-blue-300 transition-colors leading-snug mb-2 text-[15px]">
+                  <h2 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors leading-snug mb-2 text-[15px]">
                     {problem.title}
                   </h2>
 
                   {/* Category */}
-                  <span className="inline-block text-xs text-gray-500 bg-gray-800/80 border border-gray-700/50 rounded-md px-2 py-0.5 mb-3 w-fit">
+                  <span className="inline-block text-xs text-gray-500 bg-gray-100 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 rounded-md px-2 py-0.5 mb-3 w-fit">
                     {problem.category}
                   </span>
 
@@ -270,7 +270,7 @@ export default function ProblemsPage() {
                   </p>
 
                   {/* Difficulty bar */}
-                  <div className="mt-4 h-0.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                  <div className="mt-4 h-0.5 w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full ${d.bar}`}
                       style={{ width: `${DIFFICULTY_SCORE[problem.id] ?? 50}%` }}

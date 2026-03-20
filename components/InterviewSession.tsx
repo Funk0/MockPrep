@@ -92,6 +92,7 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
   const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS);
   const [chatWidth, setChatWidth] = useState(320);
   const [problemHeight, setProblemHeight] = useState(208);
+  const [isDark, setIsDark] = useState(true);
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartWidth = useRef(320);
@@ -107,6 +108,17 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
   const timeElapsedRef = useRef(0);
   // Track which message indices have already been animated
   const animatedRef = useRef<Set<number>>(new Set());
+
+  // Sync dark mode state with document class
+  useEffect(() => {
+    const saved = localStorage.getItem('theme');
+    setIsDark(saved ? saved === 'dark' : document.documentElement.classList.contains('dark'));
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   // Scroll chat to bottom
   useEffect(() => {
@@ -322,10 +334,10 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
   }
 
   return (
-    <div className="h-[calc(100vh-56px)] bg-gray-950 text-gray-100 flex flex-col overflow-hidden">
+    <div className={`h-[calc(100vh-56px)] flex flex-col overflow-hidden ${isDark ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       {/* Top Bar */}
-      <div className="h-14 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 shrink-0">
-        <span className="font-semibold text-white truncate max-w-xs">{problem.title}</span>
+      <div className={`h-14 border-b flex items-center justify-between px-4 shrink-0 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
+        <span className={`font-semibold truncate max-w-xs ${isDark ? 'text-white' : 'text-gray-900'}`}>{problem.title}</span>
         <div className="flex items-center gap-4">
           <span className={`font-mono text-lg font-bold ${timerColor}`}>
             {formatTime(timeLeft)}
@@ -343,10 +355,10 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Chat Panel */}
         <div
-          className="flex flex-col border-r border-gray-700 bg-gray-900 shrink-0"
+          className={`flex flex-col border-r shrink-0 ${isDark ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-white'}`}
           style={{ width: chatWidth }}
         >
-          <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-700">
+          <div className={`px-3 py-2 text-xs font-semibold uppercase tracking-wider border-b ${isDark ? 'text-gray-500 border-gray-700' : 'text-gray-400 border-gray-200'}`}>
             AI Interviewer
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-4">
@@ -365,11 +377,10 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
                   </span>
                   <div
                     className="max-w-[90%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap"
-                    style={{
-                      backgroundColor:
-                        msg.role === 'user' ? '#2a2a2a' : '#1e293b',
-                      color: '#ffffff',
-                    }}
+                    style={isDark
+                      ? { backgroundColor: msg.role === 'user' ? '#2a2a2a' : '#1e293b', color: '#ffffff' }
+                      : { backgroundColor: msg.role === 'user' ? '#e5e7eb' : '#eff6ff', color: '#111827' }
+                    }
                   >
                     {msg.content || (isStreaming && i === messages.length - 1 ? '▌' : '')}
                   </div>
@@ -378,7 +389,7 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
             })}
             <div ref={chatEndRef} />
           </div>
-          <div className="p-3 border-t border-gray-700">
+          <div className={`p-3 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex gap-2">
               <input
                 value={input}
@@ -386,7 +397,7 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
                 onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
                 placeholder="Type a message..."
                 disabled={isStreaming}
-                className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 disabled:opacity-50"
+                className={`flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 disabled:opacity-50 ${isDark ? 'bg-gray-800 border-gray-600 text-white placeholder-gray-500' : 'bg-gray-100 border-gray-300 text-gray-900 placeholder-gray-400'}`}
               />
               <button
                 onClick={handleSend}
@@ -402,51 +413,51 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
         {/* Drag Divider */}
         <div
           onMouseDown={handleDividerMouseDown}
-          className="w-1.5 bg-gray-700 hover:bg-blue-500 cursor-col-resize shrink-0 transition-colors"
+          className={`w-1.5 hover:bg-blue-500 cursor-col-resize shrink-0 transition-colors ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}
         />
 
         {/* Right: Problem + Editor */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Problem Description */}
           <div
-            className="overflow-y-auto bg-gray-900 p-4 shrink-0"
+            className={`overflow-y-auto p-4 shrink-0 ${isDark ? 'bg-gray-900' : 'bg-white'}`}
             style={{ height: problemHeight }}
           >
             <div className="flex items-center gap-3 mb-3">
-              <h2 className="font-semibold text-white">{problem.title}</h2>
+              <h2 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{problem.title}</h2>
               <span
                 className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
                   problem.difficulty === 'easy'
-                    ? 'bg-green-900 text-green-300'
+                    ? isDark ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-700 border border-green-300'
                     : problem.difficulty === 'medium'
-                    ? 'bg-yellow-900 text-yellow-300'
-                    : 'bg-red-900 text-red-300'
+                    ? isDark ? 'bg-yellow-900 text-yellow-300' : 'bg-yellow-100 text-yellow-700 border border-yellow-300'
+                    : isDark ? 'bg-red-900 text-red-300' : 'bg-red-100 text-red-700 border border-red-300'
                 }`}
               >
                 {problem.difficulty}
               </span>
-              <span className="px-2 py-0.5 rounded text-xs text-gray-500 bg-gray-800">
+              <span className={`px-2 py-0.5 rounded text-xs ${isDark ? 'text-gray-500 bg-gray-800' : 'text-gray-500 bg-gray-100 border border-gray-200'}`}>
                 {problem.category}
               </span>
             </div>
-            <p className="text-gray-300 text-sm whitespace-pre-wrap mb-3">
+            <p className={`text-sm whitespace-pre-wrap mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
               {problem.description}
             </p>
             {problem.examples.map((ex, i) => (
               <div key={i} className="mb-2 text-sm">
-                <span className="text-gray-500 font-medium">Example {i + 1}:</span>
-                <div className="bg-gray-800 rounded px-2 py-1 mt-1 font-mono text-xs text-gray-300">
+                <span className={`font-medium ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Example {i + 1}:</span>
+                <div className={`rounded px-2 py-1 mt-1 font-mono text-xs ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700 border border-gray-200'}`}>
                   <div>Input: {ex.input}</div>
                   <div>Output: {ex.output}</div>
                   {ex.explanation && (
-                    <div className="text-gray-500 italic">{ex.explanation}</div>
+                    <div className={isDark ? 'text-gray-500 italic' : 'text-gray-500 italic'}>{ex.explanation}</div>
                   )}
                 </div>
               </div>
             ))}
             <div className="mt-2">
               <p className="text-gray-500 text-xs font-medium mb-1">Constraints:</p>
-              <ul className="text-xs text-gray-400 space-y-0.5">
+              <ul className={`text-xs space-y-0.5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 {problem.constraints.map((c, i) => (
                   <li key={i} className="font-mono">
                     • {c}
@@ -459,18 +470,18 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
           {/* Vertical Drag Divider */}
           <div
             onMouseDown={handleVerticalDividerMouseDown}
-            className="h-1.5 bg-gray-700 hover:bg-blue-500 cursor-row-resize shrink-0 transition-colors"
+            className={`h-1.5 hover:bg-blue-500 cursor-row-resize shrink-0 transition-colors ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}
           />
 
           {/* Editor Toolbar */}
           <div
-            className="flex items-center gap-2 px-3 py-2 border-b border-gray-700 shrink-0"
-            style={{ backgroundColor: '#1a202c' }}
+            className={`flex items-center gap-2 px-3 py-2 border-b shrink-0 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}
+            style={{ backgroundColor: isDark ? '#1a202c' : '#f9fafb' }}
           >
             <select
               value={language}
               onChange={(e) => handleLanguageChange(e.target.value as Language)}
-              className="bg-gray-700 border border-gray-600 text-gray-200 text-sm rounded px-2 py-1 focus:outline-none focus:border-blue-500"
+              className={`border text-sm rounded px-2 py-1 focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-white border-gray-300 text-gray-700'}`}
             >
               {(Object.keys(LANGUAGE_LABELS) as Language[]).map((lang) => (
                 <option key={lang} value={lang}>
@@ -480,13 +491,13 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
             </select>
             <button
               onClick={handleResetCode}
-              className="bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm px-3 py-1 rounded transition-colors"
+              className={`text-sm px-3 py-1 rounded transition-colors ${isDark ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-300'}`}
             >
               Reset Code
             </button>
             <button
               onClick={handleCopyCode}
-              className="bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm px-3 py-1 rounded transition-colors"
+              className={`text-sm px-3 py-1 rounded transition-colors ${isDark ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-300'}`}
             >
               Copy Code
             </button>
@@ -499,7 +510,7 @@ export default function InterviewSession({ problem }: { problem: Problem }) {
               language={MONACO_LANGUAGE_MAP[language]}
               value={code}
               onChange={(v) => setCode(v || '')}
-              theme="vs-dark"
+              theme={isDark ? 'vs-dark' : 'vs-light'}
               options={{
                 fontSize: 14,
                 minimap: { enabled: false },
@@ -542,7 +553,7 @@ function ScoreRing({
   const trackColor = score >= 8 ? 'rgba(74,222,128,0.1)' : score >= 5 ? 'rgba(250,204,21,0.1)' : 'rgba(248,113,113,0.1)';
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col items-center text-center">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 flex flex-col items-center text-center">
       {/* Ring */}
       <div className="relative w-24 h-24 mb-4">
         <svg className="w-24 h-24 -rotate-90" viewBox="0 0 88 88" aria-hidden>
@@ -558,7 +569,7 @@ function ScoreRing({
           <span className={`text-2xl font-extrabold ${textColor}`}>{score}</span>
         </div>
       </div>
-      <h3 className="text-white font-semibold mb-2">{label}</h3>
+      <h3 className="text-gray-900 dark:text-white font-semibold mb-2">{label}</h3>
       <p className="text-gray-500 text-sm leading-relaxed">{explanation}</p>
     </div>
   );
@@ -577,7 +588,7 @@ function FeedbackScreen({
 }) {
   if (loading || !feedback) {
     return (
-      <div className="h-[calc(100vh-56px)] bg-gray-950 flex items-center justify-center">
+      <div className="h-[calc(100vh-56px)] bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           {/* Spinner */}
           <div className="w-20 h-20 mx-auto mb-8">
@@ -592,9 +603,9 @@ function FeedbackScreen({
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-2">Analyzing your session</h2>
-          <p className="text-gray-400 text-sm mb-1">Reviewing your code, communication, and problem-solving approach...</p>
-          <p className="text-gray-600 text-xs mb-6">This usually takes about 20 seconds.</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Analyzing your session</h2>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-1">Reviewing your code, communication, and problem-solving approach...</p>
+          <p className="text-gray-400 dark:text-gray-600 text-xs mb-6">This usually takes about 20 seconds.</p>
 
           {/* Animated steps */}
           <div className="flex flex-col items-center gap-2 text-sm">
@@ -630,7 +641,7 @@ function FeedbackScreen({
   const avgTrack = avg >= 8 ? 'rgba(74,222,128,0.1)' : avg >= 5 ? 'rgba(250,204,21,0.1)' : 'rgba(248,113,113,0.1)';
 
   return (
-    <div className="min-h-[calc(100vh-56px)] bg-gray-950 text-gray-100 overflow-y-auto">
+    <div className="min-h-[calc(100vh-56px)] bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 overflow-y-auto">
 
       {/* ── Hero header ── */}
       <div className="relative border-b border-gray-800/60 overflow-hidden">
@@ -668,10 +679,10 @@ function FeedbackScreen({
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                 Session Complete
               </div>
-              <h1 className="text-4xl font-extrabold text-white mb-3">
+              <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
                 {avg >= 8 ? 'Outstanding work.' : avg >= 5 ? 'Solid effort.' : 'Keep pushing.'}
               </h1>
-              <p className="text-gray-400 text-lg max-w-lg">
+              <p className="text-gray-600 dark:text-gray-400 text-lg max-w-lg">
                 {feedback.closingNote}
               </p>
             </div>
@@ -681,7 +692,7 @@ function FeedbackScreen({
 
       {/* ── Score breakdown ── */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-        <h2 className="text-lg font-semibold text-white mb-6">Score Breakdown</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Score Breakdown</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           <ScoreRing label="Communication" score={feedback.communicationScore} explanation={feedback.communicationExplanation} delay={100} />
           <ScoreRing label="Problem Solving" score={feedback.problemSolvingScore} explanation={feedback.problemSolvingExplanation} delay={250} />
@@ -692,24 +703,24 @@ function FeedbackScreen({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
 
           {/* Improvements */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-            <h3 className="font-semibold text-white mb-4">Top 3 Things to Improve</h3>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Top 3 Things to Improve</h3>
             <ol className="space-y-4">
               {feedback.topImprovements.map((item, i) => (
                 <li key={i} className="flex gap-4">
                   <span className="w-7 h-7 rounded-full bg-blue-600/15 border border-blue-500/25 text-blue-400 text-sm font-bold flex items-center justify-center shrink-0">
                     {i + 1}
                   </span>
-                  <p className="text-gray-400 text-sm leading-relaxed pt-0.5">{item}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed pt-0.5">{item}</p>
                 </li>
               ))}
             </ol>
           </div>
 
           {/* Time management */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-            <h3 className="font-semibold text-white mb-4">Time Management</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{feedback.timeManagement}</p>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Time Management</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{feedback.timeManagement}</p>
           </div>
         </div>
 
