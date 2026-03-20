@@ -1,14 +1,42 @@
 # MockPrep
 
-AI-powered mock technical interview app. Practice coding interviews with an AI interviewer powered by Claude.
+AI-powered mock technical interview app. Practice coding interviews with a live AI interviewer powered by Claude — not just problems in silence, but a real back-and-forth that mimics the experience of an actual technical round.
 
 ## Features
 
-- **3 problems** to start: Two Sum (Easy), Longest Substring Without Repeating Characters (Medium), Merge K Sorted Lists (Hard)
-- **AI Interviewer** — Powered by Claude (claude-sonnet-4-6). Uses the Socratic method, gives hints without spoiling answers, and responds in real time via streaming
-- **Monaco Code Editor** — The same editor used in VS Code, with TypeScript support
-- **45-minute countdown timer** — Ends the session automatically when time runs out
-- **Detailed feedback** — Get scored on Communication, Problem Solving, and Code Quality after each session
+### AI Interviewer
+- Real-time streaming conversation powered by Claude (claude-sonnet-4-6)
+- Socratic method — the AI asks follow-up questions, probes your reasoning, and gives hints without spoiling the answer
+- Adapts to your responses throughout the session
+
+### Problem Bank
+- **20 curated problems** across 8 categories: Arrays, Strings, Linked Lists, Trees, Dynamic Programming, Graphs, Math, and Backtracking
+- **7 Easy · 8 Medium · 5 Hard**
+- Filter by difficulty and category on the problem selector screen
+
+### Code Editor
+- Monaco editor (same engine as VS Code) embedded in a resizable split-pane layout
+- Supports **Python, JavaScript, Java, and C++** with syntax highlighting and autocompletion
+- Language selector, Reset Code, and Copy Code toolbar
+- Drag to resize the chat panel, problem description, and editor independently
+
+### Timed Sessions
+- 45-minute countdown timer with color-coded urgency (green → yellow → red)
+- Session ends automatically when time runs out
+
+### Scored Feedback Report
+- After every session: detailed scores (1–10) for **Communication**, **Problem Solving**, and **Code Quality**
+- Written explanations for each score, top 3 improvement points, and a closing note
+- Visual score bars on each category card
+
+### Session History
+- Every completed session is automatically saved to localStorage
+- `/history` page shows all past sessions sorted by most recent, with expandable cards
+- Two-click "Clear History" confirmation
+
+### UI
+- Dark mode by default with a light/dark toggle that persists across sessions
+- Responsive layout that works on 13" and larger screens
 
 ## Getting Started
 
@@ -30,7 +58,7 @@ AI-powered mock technical interview app. Practice coding interviews with an AI i
    ```bash
    cp .env.local.example .env.local
    ```
-   Add your Anthropic API key to `.env.local`.
+   Open `.env.local` and add your Anthropic API key.
 
 3. Start the dev server:
    ```bash
@@ -38,6 +66,20 @@ AI-powered mock technical interview app. Practice coding interviews with an AI i
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000)
+
+> **Tip:** If you see a `Cannot find module './948.js'` error, delete the stale build cache and restart:
+> ```bash
+> rm -rf .next && npm run dev
+> ```
+
+## Routes
+
+| Route | Description |
+|---|---|
+| `/` | Landing page |
+| `/problems` | Problem selector with difficulty and category filters |
+| `/interview/[problemId]` | Live interview session |
+| `/history` | Past session history |
 
 ## Tech Stack
 
