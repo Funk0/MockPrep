@@ -1,5 +1,8 @@
 import Link from 'next/link';
+import { Space_Grotesk } from 'next/font/google';
 import AnimateIn from '@/components/AnimateIn';
+
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -188,7 +191,7 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <main className={`${spaceGrotesk.className} min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100`}>
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
