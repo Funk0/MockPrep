@@ -228,7 +228,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-10 max-w-lg">
-                Practice with an AI interviewer that asks follow-up questions, adapts to your answers, and gives you honest feedback, not just a pass or fail.
+                Practice with an AI interviewer that asks follow-up questions, adapts to your answers, and gives you honest feedback, not just a pass or fail. No payment required.
               </p>
 
               <div className="flex">
