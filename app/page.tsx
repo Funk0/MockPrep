@@ -331,7 +331,7 @@ export default function LandingPage() {
                 <ul className="p-6 space-y-3.5">
                   {[
                     'AI interviewer that asks follow-up questions in real time',
-                    "Socratic hints when you&apos;re stuck, not just the answer",
+                    "Socratic hints when you're stuck, not just the answer",
                     'Scored feedback on communication, logic, and code quality',
                     'Replicates the pressure of a real 45-minute technical round',
                     'Session history so you can track improvement over time',
