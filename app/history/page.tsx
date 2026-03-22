@@ -247,26 +247,83 @@ export default function HistoryPage() {
   const [confirmClearGenai, setConfirmClearGenai] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('interview_sessions');
-      if (raw) {
-        const parsed = JSON.parse(raw) as SessionRecord[];
-        parsed.sort((a, b) => Number(b.id) - Number(a.id));
-        setSessions(parsed);
-      }
-    } catch {}
+    if (!authLoaded) return;
 
-    try {
-      const raw = localStorage.getItem('genai_sessions');
-      if (raw) {
-        const parsed = JSON.parse(raw) as GenAISessionRecord[];
-        parsed.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setGenaiSessions(parsed);
-      }
-    } catch {}
+    if (isSignedIn) {
+      // Fetch from DB when signed in
+      fetch('/api/sessions')
+        .then((r) => r.json())
+        .then((data) => {
+          const interviews = (data.interviewSessions ?? []).map((s: Record<string, unknown>) => ({
+            id: s.id as string,
+            date: new Date(s.created_at as string).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            problemTitle: s.problem_title as string,
+            difficulty: s.difficulty as string,
+            category: s.category as string,
+            duration: s.duration as string,
+            scores: {
+              communication: s.score_communication as number,
+              problemSolving: s.score_problem_solving as number,
+              codeQuality: s.score_code_quality as number,
+            },
+            overallScore: s.overall_score as number,
+            topImprovements: s.top_improvements as string[],
+            fullFeedback: s.full_feedback as string,
+          }));
 
-    setLoaded(true);
-  }, []);
+          const genai = (data.genaiSessions ?? []).map((s: Record<string, unknown>) => ({
+            id: s.id as string,
+            date: s.created_at as string,
+            problemId: s.problem_id as string,
+            problemTitle: s.problem_title as string,
+            difficulty: s.difficulty as string,
+            category: s.category as string,
+            duration: s.duration as number,
+            promptCount: s.prompt_count as number,
+            ranCode: s.ran_code as boolean,
+            codeMatchesAI: s.code_matches_ai as boolean,
+            codeModifiedFromAI: s.code_modified_from_ai as boolean,
+            scores: {
+              promptQuality: s.score_prompt_quality as number,
+              outputValidation: s.score_output_validation as number,
+              humanJudgment: s.score_human_judgment as number,
+              accountability: s.score_accountability as number,
+            },
+            fluencyLevel: s.fluency_level as string,
+            averageScore: s.average_score as number,
+            keyMoments: s.key_moments as string[],
+            topImprovements: s.top_improvements as string[],
+            closingNote: s.closing_note as string,
+          }));
+
+          setSessions(interviews);
+          setGenaiSessions(genai);
+          setLoaded(true);
+        })
+        .catch(() => setLoaded(true));
+    } else {
+      // Fall back to localStorage when not signed in
+      try {
+        const raw = localStorage.getItem('interview_sessions');
+        if (raw) {
+          const parsed = JSON.parse(raw) as SessionRecord[];
+          parsed.sort((a, b) => Number(b.id) - Number(a.id));
+          setSessions(parsed);
+        }
+      } catch {}
+
+      try {
+        const raw = localStorage.getItem('genai_sessions');
+        if (raw) {
+          const parsed = JSON.parse(raw) as GenAISessionRecord[];
+          parsed.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          setGenaiSessions(parsed);
+        }
+      } catch {}
+
+      setLoaded(true);
+    }
+  }, [authLoaded, isSignedIn]);
 
   const handleClear = () => {
     if (!confirmClear) { setConfirmClear(true); return; }

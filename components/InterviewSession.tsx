@@ -81,6 +81,13 @@ function saveSession(record: SessionRecord): void {
   } catch {
     // localStorage may be unavailable in some environments — silently ignore
   }
+
+  // Save to DB (fire and forget — don't block UI)
+  fetch('/api/sessions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'interview', session: record }),
+  }).catch(() => {});
 }
 
 export default function InterviewSession({ problem }: { problem: Problem }) {

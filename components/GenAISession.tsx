@@ -559,6 +559,13 @@ export default function GenAISession({ problem }: { problem: GenAIProblem }) {
       const existing = JSON.parse(localStorage.getItem('genai_sessions') ?? '[]');
       localStorage.setItem('genai_sessions', JSON.stringify([record, ...existing]));
 
+      // Save to DB (fire and forget — don't block UI)
+      fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'genai', session: record }),
+      }).catch(() => {});
+
       setSessionRecord(record);
       setFeedback(feedbackData);
     } catch {
