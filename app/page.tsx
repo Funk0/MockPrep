@@ -294,7 +294,7 @@ export default function LandingPage() {
             <SectionLabel index="001" label="Why MockPrep" />
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-3">The gap between practice and performance</h2>
             <p className="text-slate-500 text-lg max-w-xl">
-              Solving problems alone doesn't prepare you for the real pressure of a technical interview. MockPrep closes that gap.
+              Solving problems alone doesn&apos;t prepare you for the real pressure of a technical interview. MockPrep closes that gap.
             </p>
           </AnimateIn>
 
@@ -331,7 +331,7 @@ export default function LandingPage() {
                 <ul className="p-6 space-y-3.5">
                   {[
                     'AI interviewer that asks follow-up questions in real time',
-                    "Socratic hints when you're stuck, not just the answer",
+                    "Socratic hints when you&apos;re stuck, not just the answer",
                     'Scored feedback on communication, logic, and code quality',
                     'Replicates the pressure of a real 45-minute technical round',
                     'Session history so you can track improvement over time',
