@@ -43,6 +43,12 @@ export default function NavBar() {
         >
           Practice
         </Link>
+        <Link
+          href="/about"
+          className="nav-link text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          About
+        </Link>
         {!isLanding && (
           <Link
             href="/history"
