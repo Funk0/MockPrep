@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Space_Grotesk, JetBrains_Mono, Space_Mono } from 'next/font/google';
 import AnimateIn from '@/components/AnimateIn';
+import TypewriterWord from '@/components/TypewriterWord';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 const jetbrainsMono = JetBrains_Mono({
@@ -253,7 +254,7 @@ export default function LandingPage() {
                 Simulated interviews for the{' '}
                 <span className="text-amber-500 dark:text-amber-400">next generation</span>
                 {' '}
-                <span className="text-blue-600 dark:text-blue-400">of engineers.</span>
+                <span className="text-blue-600 dark:text-blue-400">of </span><TypewriterWord /><span className="text-blue-600 dark:text-blue-400">.</span>
               </h1>
 
               <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed mb-10 max-w-lg">
