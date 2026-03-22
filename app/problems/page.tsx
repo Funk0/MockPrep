@@ -9,16 +9,18 @@ import { genaiProblems } from '@/lib/genaiProblems';
 
 // Global difficulty score (0–100) per problem.
 const GENAI_DIFFICULTY_SCORE: Record<string, number> = {
-  'find-duplicates-ai': 35,
-  'csv-report-ai': 42,
-  'json-flattener-ai': 48,
+  // Medium: spread across 28–55 to match coding mediums (32–60)
+  'find-duplicates-ai': 28,
+  'csv-report-ai': 38,
   'text-chunker-ai': 44,
-  'lru-cache-ai': 72,
-  'trie-autocomplete-ai': 75,
+  'json-flattener-ai': 52,
+  // Hard: spread across 65–93 to match coding hards (63–95)
+  'lru-cache-ai': 65,
+  'trie-autocomplete-ai': 72,
   'log-analyzer-ai': 78,
-  'session-analyzer-ai': 80,
-  'rate-limiter-ai': 82,
-  'expression-evaluator-ai': 88,
+  'session-analyzer-ai': 83,
+  'rate-limiter-ai': 87,
+  'expression-evaluator-ai': 93,
 };
 
 const DIFFICULTY_SCORE: Record<string, number> = {
