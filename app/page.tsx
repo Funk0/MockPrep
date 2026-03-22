@@ -295,7 +295,7 @@ export default function LandingPage() {
             <SectionLabel index="001" label="Why MockPrep" />
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-3">The gap between practice and performance</h2>
             <p className="text-slate-500 text-lg max-w-xl">
-              Solving problems alone doesn&apos;t prepare you for the real pressure of a technical interview. MockPrep closes that gap.
+              Most platforms only test what you know. MockPrep tests how you think, how you communicate, and how well you work with AI — because all three matter now.
             </p>
           </AnimateIn>
 
@@ -312,8 +312,9 @@ export default function LandingPage() {
                     'Solve problems in silence with no one to talk to',
                     'No feedback until you look up the answer',
                     'Pass/fail verdict with no explanation',
-                    'Never tested on communication',
+                    'Never tested on communication or reasoning',
                     "Doesn't replicate real interview pressure",
+                    'Zero coverage of AI collaboration skills',
                   ].map((text) => (
                     <li key={text} className="flex items-start gap-3 text-sm">
                       <span className="text-red-400/70 shrink-0 mt-0.5 font-mono select-none">-</span>
@@ -336,6 +337,7 @@ export default function LandingPage() {
                     'Scored feedback on communication, logic, and code quality',
                     'Replicates the pressure of a real 45-minute technical round',
                     'Session history so you can track improvement over time',
+                    'GenAI Fluency track: practice directing and validating AI the way real engineers do',
                   ].map((text) => (
                     <li key={text} className="flex items-start gap-3 text-sm">
                       <span className="text-green-500/70 shrink-0 mt-0.5 font-mono select-none">+</span>
@@ -356,7 +358,7 @@ export default function LandingPage() {
             <SectionLabel index="002" label="Features" />
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-3">Built around real interview mechanics</h2>
             <p className="text-slate-500 text-lg max-w-xl">
-              Every feature exists because real technical interviews demand it.
+              Every feature exists because real technical interviews demand it — including the ones that test how well you work with AI.
             </p>
           </AnimateIn>
 
@@ -406,14 +408,13 @@ export default function LandingPage() {
                   idx="04"
                   icon={<IconLayers />}
                   accent="cyan"
-                  title="20 Curated Problems"
-                  description="Easy, medium, and hard problems spanning Arrays, Trees, Dynamic Programming, Graphs, and more. Covers the topics that show up most in real interviews."
+                  title="Two Problem Tracks"
+                  description="20 curated coding problems for traditional interview prep, plus 10 GenAI Fluency assessments built around scenarios where AI produces plausible-but-flawed output. Practice both, because both matter."
                   extra={
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       {[
-                        { label: 'Easy', cls: 'border-green-500/25 text-green-600/80 dark:text-green-400/80' },
-                        { label: 'Medium', cls: 'border-amber-500/25 text-amber-600/80 dark:text-amber-400/80' },
-                        { label: 'Hard', cls: 'border-red-500/25 text-red-600/80 dark:text-red-400/80' },
+                        { label: 'coding_problems', cls: 'border-cyan-500/25 text-cyan-600/80 dark:text-cyan-400/80' },
+                        { label: 'genai_fluency', cls: 'border-violet-500/25 text-violet-600/80 dark:text-violet-400/80' },
                       ].map(({ label, cls }) => (
                         <span key={label} className={`text-[11px] font-mono border px-2 py-0.5 rounded-sm ${cls}`}>{label}</span>
                       ))}
@@ -469,7 +470,7 @@ export default function LandingPage() {
                   step: '01',
                   cmd: '--pick-problem',
                   title: 'Pick a problem',
-                  desc: 'Filter by difficulty or category and choose a problem that matches where you want to focus.',
+                  desc: 'Choose from two tracks: traditional coding problems for interview fundamentals, or GenAI Fluency assessments to practice working with AI the way the job actually requires.',
                 },
                 {
                   step: '02',
@@ -514,7 +515,7 @@ export default function LandingPage() {
                 Find out where you stand.
               </h2>
               <p className="text-slate-500 text-lg max-w-lg">
-                Pick a problem and start your first session right now.
+                Coding fundamentals or GenAI fluency — pick a track and start your first session right now.
               </p>
             </div>
             <Link
