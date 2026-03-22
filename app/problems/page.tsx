@@ -94,11 +94,20 @@ function ProblemsPageInner() {
   const [activeTab, setActiveTab] = useState<'coding' | 'genai'>(initialTab);
   const [selectedDifficulty, setSelectedDifficulty] = useState<'' | Difficulty>('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [genaiDifficulty, setGenaiDifficulty] = useState<'' | Difficulty>('');
+  const [genaiCategory, setGenaiCategory] = useState('');
 
   const categories = useMemo(() => {
     const set = new Set(problems.map((p) => p.category));
     return Array.from(set).sort();
   }, []);
+
+  const genaiCategories = useMemo(() => {
+    const set = new Set(genaiProblems.map((p) => p.category));
+    return Array.from(set).sort();
+  }, []);
+
+  const DIFFICULTY_ORDER: Record<Difficulty, number> = { easy: 0, medium: 1, hard: 2 };
 
   const filtered = useMemo(() => {
     return problems.filter((p) => {
@@ -107,6 +116,16 @@ function ProblemsPageInner() {
       return true;
     });
   }, [selectedDifficulty, selectedCategory]);
+
+  const filteredGenai = useMemo(() => {
+    return genaiProblems
+      .filter((p) => {
+        if (genaiDifficulty && p.difficulty !== genaiDifficulty) return false;
+        if (genaiCategory && p.category !== genaiCategory) return false;
+        return true;
+      })
+      .sort((a, b) => DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty]);
+  }, [genaiDifficulty, genaiCategory]);
 
   const counts = useMemo(() => ({
     easy: problems.filter((p) => p.difficulty === 'easy').length,
@@ -334,14 +353,87 @@ function ProblemsPageInner() {
       {/* ── GenAI Tab ── */}
       {activeTab === 'genai' && (
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
-          <div className="mb-6">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {genaiProblems.length} assessment{genaiProblems.length !== 1 ? 's' : ''} available &nbsp;·&nbsp; No time limit &nbsp;·&nbsp; AI collaboration encouraged
-            </p>
+
+          {/* Filter bar */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
+            <span className="text-gray-500 text-sm font-medium hidden sm:block">Filter:</span>
+
+            <div className="flex gap-2" role="group" aria-label="Filter by difficulty">
+              {(['', 'easy', 'medium', 'hard'] as const).map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setGenaiDifficulty(d)}
+                  aria-pressed={genaiDifficulty === d}
+                  className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                    genaiDifficulty === d
+                      ? d === ''
+                        ? 'bg-purple-600 border-purple-500 text-white'
+                        : DIFFICULTY[d].active
+                      : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
+                  }`}
+                >
+                  {d === '' ? 'All' : d.charAt(0).toUpperCase() + d.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            <div className="w-px h-5 bg-gray-300 dark:bg-gray-700 hidden sm:block" aria-hidden />
+
+            <div className="relative">
+              <select
+                value={genaiCategory}
+                onChange={(e) => setGenaiCategory(e.target.value)}
+                aria-label="Filter by category"
+                className="appearance-none bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 hover:border-gray-400 dark:hover:border-gray-500 transition-colors cursor-pointer"
+              >
+                <option value="">All Categories</option>
+                {genaiCategories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+
+            <div className="group relative flex items-center gap-1 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors cursor-default ml-auto" aria-label="Bar length indicates relative difficulty">
+              <InfoIcon />
+              <span className="text-xs hidden sm:block">Difficulty bars</span>
+              <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 text-center leading-relaxed shadow-xl">
+                Bar length shows relative difficulty across the full problem set, not just within a tier.
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-200 dark:border-t-gray-700" />
+              </div>
+            </div>
+
+            {(genaiDifficulty || genaiCategory) && (
+              <div className="flex items-center gap-2">
+                <span className="text-gray-500 text-sm">
+                  {filteredGenai.length} of {genaiProblems.length}
+                </span>
+                <button
+                  onClick={() => { setGenaiDifficulty(''); setGenaiCategory(''); }}
+                  className="text-xs text-purple-400 hover:text-purple-300 border border-purple-500/30 hover:border-purple-400/50 px-2.5 py-1 rounded-lg transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
           </div>
 
+          {filteredGenai.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-400 dark:text-gray-500" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 font-medium mb-1">No problems match your filters</p>
+              <p className="text-gray-500 text-sm">Try adjusting the difficulty or category.</p>
+            </div>
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {genaiProblems.map((problem) => {
+            {filteredGenai.map((problem) => {
               const d = DIFFICULTY[problem.difficulty];
               const descSnippet = problem.description.split('\n')[0].slice(0, 110);
               return (
@@ -382,6 +474,13 @@ function ProblemsPageInner() {
               );
             })}
           </div>
+          )}
+
+          {filteredGenai.length > 0 && (
+            <p className="text-center text-gray-700 text-sm mt-12">
+              {filteredGenai.length} assessment{filteredGenai.length !== 1 ? 's' : ''} shown &nbsp;·&nbsp; No time limit &nbsp;·&nbsp; AI collaboration encouraged
+            </p>
+          )}
         </div>
       )}
     </main>
