@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Space_Grotesk, JetBrains_Mono, Montserrat } from 'next/font/google';
+import { Space_Grotesk, JetBrains_Mono, Space_Mono } from 'next/font/google';
 import AnimateIn from '@/components/AnimateIn';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
@@ -8,7 +8,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500', '600'],
   variable: '--font-mono',
 });
-const montserrat = Montserrat({ subsets: ['latin'], weight: ['700', '800', '900'] });
+const spaceMono = Space_Mono({ subsets: ['latin'], weight: ['400', '700'] });
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -249,12 +249,11 @@ export default function LandingPage() {
                 {'// AI-POWERED MOCK INTERVIEWS'}
               </div>
 
-              <h1 className={`${montserrat.className} text-5xl xl:text-6xl font-extrabold text-slate-900 dark:text-slate-50 leading-tight tracking-tight mb-6`}>
-                Interview practice<br />
-                built for{' '}
-                <span className="text-amber-500 dark:text-amber-400">engineers</span>
-                <br />
-                <span className="text-blue-600 dark:text-blue-400">who ship.</span>
+              <h1 className={`${spaceMono.className} text-4xl xl:text-5xl font-bold text-slate-900 dark:text-slate-50 leading-snug tracking-normal mb-6`}>
+                Simulated interviews for the{' '}
+                <span className="text-amber-500 dark:text-amber-400">next generation</span>
+                {' '}
+                <span className="text-blue-600 dark:text-blue-400">of engineers.</span>
               </h1>
 
               <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed mb-10 max-w-lg">
