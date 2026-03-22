@@ -73,12 +73,6 @@ export default function MissionPage() {
             direct it, question it, and build something reliable on top of it.
           </p>
 
-          <p>
-            MockPrep is not a finished product. It is an honest attempt to build something that
-            reflects what the job actually looks like right now, not what it looked like five years
-            ago. We are still figuring out what that means. But that is the goal.
-          </p>
-
           {/* Divider */}
           <div className="flex items-center gap-4 pt-2">
             <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
